@@ -54,11 +54,18 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          path: ./dist
-          name: Vite-App
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     path: ./dist
+      #     name: Vite-App
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "_site/" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -66,11 +73,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          path: ./dist
-          name: Vite-App
+      # - name: Download artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     path: ./dist
+      #     name: Vite-App
       - name: Deploy to GitHub pages
         id: deployment
         uses: actions/deploy-pages@v4
