@@ -1,5 +1,9 @@
 name: Test and Deploy App
 on: push
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -55,8 +59,20 @@ jobs:
         with:
           path: ./dist
           name: Vite-App
-      - run: git config user.name github-actions
-      - run: git config user.email github-actions@github.com
-      - run: git --work-tree build add --all
-      - run: git commit -m "Automatic Deploy action run by github-actions"
-      - run: git push origin HEAD:gh-pages --force
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          name: Vite-App
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Display url
+        run: echo "${{ steps.deployment.outputs.page_url }}"
