@@ -1,5 +1,5 @@
 name: Test and Deploy App
-on: push
+on: [push, workflow_dispatch]
 permissions:
   contents: read
   pages: write
