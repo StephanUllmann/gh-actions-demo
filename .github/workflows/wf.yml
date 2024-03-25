@@ -38,7 +38,7 @@ jobs:
       - name: Test Code
         run: npm run test
   build:
-    needs: test
+    needs: [test, lint]
     runs-on: ubuntu-latest
     steps:
       - name: Get Code from Repo
@@ -86,5 +86,5 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: Vite-App
-      - name: Display url
-        run: echo "${{ steps.deployment.outputs.page_url }}"
+      # - name: Display url
+      #   run: echo "${{ steps.deployment.outputs.page_url }}"
