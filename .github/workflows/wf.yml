@@ -1,0 +1,19 @@
+name: Test and Deploy App
+on: push
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code from Repo
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: deps-${{hashFiles('**/package-lock.json')}}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Lint Code
+        run: npm run lint
