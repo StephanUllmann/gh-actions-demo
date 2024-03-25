@@ -1,5 +1,15 @@
 name: Test and Deploy App
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    types: [synchronize, opened]
+    branches:
+      - main
+      - dev
 permissions:
   contents: read
   pages: write
@@ -86,5 +96,3 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: Vite-App
-      # - name: Display url
-      #   run: echo "${{ steps.deployment.outputs.page_url }}"
